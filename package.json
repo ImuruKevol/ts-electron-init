@@ -2,6 +2,8 @@
   "name": "ts-electron-test",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
+  "main": "public/electron.js",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -22,7 +24,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "el:start": "wait-on tcp:3000 && electron .",
+    "el:dev": "concurrently -k \"BROWSER=none yarn start\" \"yarn el:start\"",
+    "el:build": "yarn build && electron-builder"
   },
   "eslintConfig": {
     "extends": [
@@ -45,10 +50,24 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
+    "concurrently": "^6.2.0",
+    "electron": "^13.1.7",
+    "electron-builder": "^22.11.7",
     "eslint": "^7.31.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "wait-on": "^6.0.0"
+  },
+  "build": {
+    "appId": "com.season.ts-electron-test",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
   }
 }
