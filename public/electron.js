@@ -1,38 +1,49 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
+const electron = require("electron");
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const path = require("path");
+const isDev = require("electron-is-dev");
 
-const { app, BrowserWindow } = require('electron');
-const isDev = process.env.mode === 'dev';
+let mainWindow;
 
 function createWindow() {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  mainWindow = new BrowserWindow({ 
+    width: 900, 
+    height: 680,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
-      preload: __dirname + '/preload.js',
+      contextIsolation: false,
+      preload: __dirname + "/preload.js",
+      devTools: isDev,
     },
   });
-
-  if (!isDev) {
-    win.loadFile(`${path.join(__dirname, '../build/index.html')}`);
-  } else {
-    win.loadURL('http://localhost:3000');
-    win.webContents.openDevTools({ mode: 'detach' });
+  
+  mainWindow.loadURL(
+    isDev
+      ? "http://localhost:3000"
+      : `file://${path.join(__dirname, "../build/index.html")}`
+  );
+  
+  if (isDev) {
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
+  
+  mainWindow.setResizable(true);
+  mainWindow.on('closed', () => (mainWindow = null));
+  mainWindow.focus();
 }
 
-app.whenReady().then(createWindow);
+app.on("ready", createWindow);
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
+app.on("activate", () => {
+  if (mainWindow === null) {
     createWindow();
   }
 });
