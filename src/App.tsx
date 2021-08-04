@@ -1,8 +1,14 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const { shell } = window.require('electron');
+
 const App = (): ReactElement => {
+  useEffect(() => {
+    shell.openExternal('https://github.com');
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -10,12 +16,17 @@ const App = (): ReactElement => {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Learn React
         </a>
       </header>
     </div>
   );
-};
+}
 
 export default App;
